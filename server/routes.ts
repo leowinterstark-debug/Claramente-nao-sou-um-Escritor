@@ -91,6 +91,33 @@ export async function registerRoutes(
     });
   });
 
+  // AI Routes
+  app.post(api.ai.suggest.path, isAuthenticated, async (req, res) => {
+    try {
+      const { content } = api.ai.suggest.input.parse(req.body);
+      
+      const response = await (app as any).openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "system",
+            content: "Você é um assistente de escrita para um diário editorial. Sua tarefa é fornecer sugestões sutis de fluidez, correção ortográfica e ajustes leves de clareza. NUNCA reescreva o texto por completo. Mantenha o tom autoral, íntimo, melancólico ou ácido do usuário. Retorne apenas o texto sugerido, sem explicações."
+          },
+          {
+            role: "user",
+            content: content
+          }
+        ],
+        max_tokens: 2000,
+      });
+
+      res.json({ suggestion: response.choices[0].message.content });
+    } catch (err) {
+      console.error("AI Suggestion error:", err);
+      res.status(500).json({ message: "Failed to generate AI suggestion" });
+    }
+  });
+
   // Seed Data
   await seedDatabase();
 

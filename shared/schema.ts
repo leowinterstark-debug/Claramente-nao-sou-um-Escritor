@@ -6,7 +6,8 @@ export const posts = pgTable("posts", {
   id: serial("id").primaryKey(),
   title: text("title"),
   content: text("content").notNull(),
-  imageUrl: text("image_url"),
+  coverImageUrl: text("cover_image_url"),
+  bodyImageUrl: text("body_image_url"),
   createdAt: timestamp("created_at").defaultNow(),
   isVisible: boolean("is_visible").default(true),
 });

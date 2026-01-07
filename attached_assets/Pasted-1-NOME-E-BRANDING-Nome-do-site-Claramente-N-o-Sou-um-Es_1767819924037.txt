@@ -1,0 +1,199 @@
+1. NOME E BRANDING
+
+Nome do site:
+Claramente Não Sou um Escritor
+
+Direção de branding (OBRIGATÓRIA):
+
+O nome NÃO deve ser tratado como texto simples
+
+Deve parecer capa de livro / manifesto editorial
+
+Criar hierarquia visual:
+
+“Claramente Não Sou” em tamanho menor
+
+“um Escritor” em tamanho maior
+
+Fonte serifada
+
+Muito espaço em branco
+
+Centralizado
+
+Forte impacto visual sem usar cores ou imagens
+
+2. PRIMEIRA TELA (GATE +18)
+
+Exibir apenas:
+
+Nome do site (com a hierarquia acima)
+
+Texto discreto:
+“Conteúdo sensível”
+
+Botão simples:
+“Tenho mais de 18 anos”
+
+Regras:
+
+Nenhum menu
+
+Nenhum link
+
+Nenhuma explicação
+
+Após confirmação, acessar o site principal
+
+Salvar confirmação em cookie simples
+
+3. MAIN PAGE (ESTILO JORNAL / DIÁRIO)
+
+Após o +18:
+
+Exibir novamente o nome do site no topo
+
+Layout editorial, limpo, vertical
+
+Sem menu
+
+Sem sidebar
+
+Sem rodapé funcional
+
+👉 A última letra de “Escritor” deve funcionar como botão invisível para /login:
+
+Invisível
+
+Apenas cursor muda no hover
+
+Página não indexada
+
+4. FEED DE PUBLICAÇÕES
+
+Formato:
+
+Lista vertical contínua
+
+Estilo jornal / diário
+
+Scroll natural
+
+Cada publicação:
+
+Data visível (discreta)
+
+Título (opcional)
+
+Texto curto ou médio
+
+Imagem de capa opcional
+
+1 imagem adicional opcional no corpo
+
+Regras:
+
+Nada de cards
+
+Nada de grid
+
+Nada de efeitos
+
+Escrita é o foco absoluto
+
+5. TOM DO TEXTO
+
+Íntimo
+
+Às vezes ácido
+
+Às vezes melancólico
+
+Humor seco / dark comedy permitido
+
+Escrita honesta, não performática
+
+6. ÁREA DE LOGIN E PUBLICAÇÃO
+Login (/login)
+
+Minimalista
+
+Sem branding
+
+Apenas senha
+
+Não indexado
+
+Publicação
+
+Campos:
+
+Título (opcional)
+
+Texto
+
+URL da imagem de capa
+
+URL de 1 imagem opcional no corpo
+
+Botão:
+
+Publicar
+
+Regras:
+
+Texto não pode ser editado após publicação
+
+Texto não pode ser excluído via interface
+
+7. IA AUXILIAR DE ESCRITA (NOVO)
+
+Adicionar uma ferramenta opcional de IA com as seguintes funções:
+
+Correção ortográfica
+
+Sugestões sutis de fluidez
+
+Ajustes leves de clareza
+
+Nunca reescrever o texto por completo
+
+Nunca alterar o tom autoral
+
+Interface:
+
+Ícone pequeno e discreto
+
+Ação manual (“Sugerir ajustes”)
+
+Totalmente opcional
+
+8. SEO (INVISÍVEL)
+
+Estrutura semântica correta
+
+Meta description automática
+
+Sitemap automático
+
+Indexar apenas páginas públicas
+
+Não indexar login, gate +18 ou admin
+
+Nada de SEO visível.
+
+9. REGRA FINAL
+
+Este site:
+
+Não é rede social
+
+Não é blog comercial
+
+Não é portfólio
+
+Não busca engajamento
+
+É um diário público, anônimo e permanente, com estética editorial forte e escrita como ato íntimo.
+
+Crie o site respeitando rigorosamente essa filosofia.

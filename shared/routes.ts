@@ -45,6 +45,17 @@ export const api = {
       },
     },
   },
+  ai: {
+    suggest: {
+      method: 'POST' as const,
+      path: '/api/ai/suggest',
+      input: z.object({ content: z.string() }),
+      responses: {
+        200: z.object({ suggestion: z.string() }),
+        400: errorSchemas.validation,
+      },
+    },
+  },
   auth: {
     check: {
       method: 'GET' as const,
