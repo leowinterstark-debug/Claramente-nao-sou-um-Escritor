@@ -1,0 +1,238 @@
+PROMPT FINAL — IA CONSTRUTORA DE SITES
+
+Crie e hospede um site web minimalista, autoral e anônimo, inspirado em layouts editoriais de blogs de viagem e revistas digitais, com foco absoluto em escrita pessoal no formato de diário público.
+
+O site deve parecer um diário de um escritor amador viajante, com textos sentimentais, histórias curtas, observações e relatos, apresentados de forma limpa, tipográfica e silenciosa.
+
+1. NOME DO SITE
+
+“Claramente Não Sou um Escritor”
+
+O nome deve aparecer como texto simples
+
+Sem logotipo
+
+Sem ícones
+
+Sem efeitos gráficos
+
+Tipografia grande, serifada
+
+Estilo editorial (como capa de revista)
+
+2. FLUXO DE ENTRADA (OBRIGATÓRIO)
+Primeira tela (Gate +18)
+
+Ao acessar o site, o usuário deve ver apenas:
+
+Fundo branco (ou off-white)
+
+O nome do site centralizado na tela:
+Claramente Não Sou um Escritor
+
+Logo abaixo, uma única opção:
+
+Botão ou checkbox simples com o texto:
+“Tenho mais de 18 anos”
+
+Regras:
+
+Nenhum menu
+
+Nenhum texto adicional
+
+Nenhuma explicação
+
+Nenhum link visível
+
+Ao confirmar +18, o usuário entra na página principal
+
+A confirmação pode ser salva via cookie simples
+
+3. MAIN PAGE (APÓS +18)
+Cabeçalho
+
+O nome do site aparece novamente
+
+Centralizado no topo da página
+
+Grande, tipográfico, estilo editorial
+
+Sem menu
+
+Sem navegação lateral
+
+Sem rodapé funcional
+
+👉 A última letra da palavra “Escritor” deve funcionar como um botão invisível, levando para a página de login administrativa:
+
+Visualmente idêntica ao resto do texto
+
+Apenas no hover o cursor muda
+
+Clique leva para /login
+
+Página não indexada
+
+4. LAYOUT GERAL (INSPIRAÇÃO NA IMAGEM)
+
+O layout deve ser fortemente inspirado em revistas digitais / blogs de viagem, como na imagem de referência:
+
+Estrutura vertical
+
+Conteúdo alinhado à esquerda
+
+Ritmo visual claro entre textos e imagens
+
+Sensação de editorial, não de rede social
+
+Muito espaço em branco
+
+Tipografia como elemento principal
+
+5. FEED DE POSTAGENS (FORMATO “DIÁRIO”)
+
+Logo abaixo do título do site, exibir as postagens em formato de lista vertical contínua, semelhante a uma revista/blog.
+
+Cada postagem deve conter:
+
+Data (sempre visível, discreta)
+
+Título (opcional)
+
+Texto curto ou médio
+
+1 ou 2 imagens no máximo
+
+Regras visuais:
+
+Nada de cards
+
+Nada de grid
+
+Nada de caixas
+
+Apenas fluxo vertical
+
+Separação entre posts feita por espaço, não por linhas
+
+Imagens integradas ao texto, não como destaque principal
+
+A leitura deve ser fluida, como folhear páginas.
+
+6. ESTILO VISUAL
+
+Cores:
+
+Fundo branco ou off-white
+
+Texto preto
+
+Cinzas apenas para datas
+
+Nenhuma outra cor
+
+Tipografia:
+
+Fonte serifada para textos
+
+Estilo literário/editorial
+
+Corpo confortável para leitura
+
+Entrelinha generosa
+
+Hierarquia clara entre título, data e texto
+
+7. TOM E CONTEÚDO
+
+Escrita pessoal
+
+Anônima
+
+Às vezes informal
+
+Às vezes sentimental
+
+Às vezes crua
+
+Sem preocupação com julgamento
+
+Sem tentativa de performance
+
+O site deve transmitir a sensação de um caderno aberto de alguém que escreve porque precisa escrever.
+
+8. ÁREA ADMINISTRATIVA (SECRETA)
+Página /login
+
+Extremamente simples
+
+Sem branding
+
+Sem menu
+
+Apenas login e senha
+
+Não indexada
+
+Após login
+
+Interface de escrita minimalista com:
+
+Data automática
+
+Campo de título (opcional)
+
+Campo de texto
+
+Upload simples de imagens
+
+Botão único: Publicar
+
+9. REGRAS DE PUBLICAÇÃO
+
+Após publicado, o texto NÃO pode ser editado
+
+Não pode ser apagado via interface
+
+Publicações são permanentes
+
+Não existem comentários
+
+Não existem likes
+
+Não existe compartilhamento social
+
+10. SEO (INVISÍVEL)
+
+Estrutura semântica correta (article, time, headings)
+
+Meta description automática baseada no início do texto
+
+Sitemap automático
+
+Indexar apenas páginas públicas
+
+Não indexar:
+
+Gate +18
+
+Login
+
+Área administrativa
+
+Nada de SEO deve aparecer visualmente.
+
+11. FILOSOFIA FINAL (REGRA MÁXIMA)
+
+Não é uma rede social
+
+Não é um blog comercial
+
+Não é um portfólio
+
+Não é uma marca pessoal
+
+É um diário público, anônimo e permanente, com estética editorial e experiência de leitura silenciosa.
+
+Crie o site respeitando rigorosamente essa filosofia, priorizando simplicidade absoluta, tipografia e fluidez.
