@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useLogin } from "@/hooks/use-auth";
+import { useState, useEffect } from "react";
+import { useLogin, useAuthCheck } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { Loader2 } from "lucide-react";
 
@@ -7,7 +7,14 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [, setLocation] = useLocation();
+  const { data: auth, isLoading: authLoading } = useAuthCheck();
   const { mutate: login, isPending } = useLogin();
+
+  useEffect(() => {
+    if (!authLoading && auth?.isAuthenticated) {
+      setLocation("/admin");
+    }
+  }, [auth, authLoading, setLocation]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,6 +25,14 @@ export default function Login() {
       onError: (err) => setError(err.message),
     });
   };
+
+  if (authLoading || auth?.isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader2 className="w-6 h-6 animate-spin text-gray-200" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white p-6">
