@@ -35,7 +35,7 @@ export function AgeGate() {
             <img 
               src={logoLettering} 
               alt="Claramente Não Sou um Escritor" 
-              className="w-[70vw] md:w-auto md:h-48 object-contain"
+              className="w-[70vw] md:w-[40vw] lg:w-[30vw] object-contain"
             />
             
             <div className="space-y-6">

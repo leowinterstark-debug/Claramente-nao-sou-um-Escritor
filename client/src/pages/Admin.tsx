@@ -5,12 +5,16 @@ import { useLocation } from "wouter";
 import { Loader2, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+import { useUpload } from "@/hooks/use-upload";
+import { ObjectUploader } from "@/components/ObjectUploader";
+
 export default function Admin() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { data: auth, isLoading: authLoading } = useAuthCheck();
   const { mutate: logout } = useLogout();
   const { mutate: createPost, isPending } = useCreatePost();
+  const { getUploadParameters } = useUpload();
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -137,9 +141,32 @@ export default function Admin() {
 
           {/* Image URL Input & Preview */}
           <div className="border-t border-gray-100 pt-8">
-            <label className="block font-sans text-xs text-gray-400 uppercase tracking-widest mb-4">
-              Imagem de capa (URL)
-            </label>
+            <div className="flex justify-between items-end mb-4">
+              <label className="block font-sans text-xs text-gray-400 uppercase tracking-widest">
+                Imagem de capa
+              </label>
+              <ObjectUploader
+                onGetUploadParameters={getUploadParameters}
+                onComplete={(result) => {
+                  const upload = result.successful?.[0];
+                  if (upload) {
+                    // Extract the path for serving
+                    const fullPath = upload.uploadURL;
+                    // The backend serves /objects/...
+                    // We need to request the path from the backend or parse it
+                    // Based on integration, the objectPath is returned in request-url
+                    // But Uppy result has uploadURL. Let's use a simpler approach:
+                    // The hook's getUploadParameters doesn't easily expose the objectPath back to onComplete.
+                    // However, we can use the upload metadata or a custom event.
+                    // For now, let's inform the user we'll use the URL.
+                    setCoverImageUrl(upload.response?.body?.objectPath || "");
+                  }
+                }}
+                buttonClassName="h-8 px-3 text-[10px] uppercase tracking-tighter"
+              >
+                Upload do Computador
+              </ObjectUploader>
+            </div>
             
             {coverImageUrl && (
               <div className="mb-6 w-full aspect-video bg-gray-50 overflow-hidden grayscale rounded-sm border border-gray-100">

@@ -13,10 +13,14 @@ const openai = new OpenAI({
 });
 const SessionStore = MemoryStore(session);
 
+import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Register Object Storage routes
+  registerObjectStorageRoutes(app);
   // Auth Middleware
   app.use(
     session({
