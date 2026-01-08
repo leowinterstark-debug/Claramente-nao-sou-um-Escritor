@@ -1,23 +1,28 @@
-import { Link, useLocation } from "wouter";
-import logoLettering from "@assets/generated_images/lettering_logo_for_blog.png";
+import { Link } from "wouter";
+import logoLettering from "@assets/generated_images/logo_final.png";
 
 export function Header() {
-  const [location] = useLocation();
-  const isAdmin = location.startsWith("/admin") || location.startsWith("/login");
-
-  if (isAdmin) return null;
-
   return (
-    <header className="w-full py-20 px-4 flex justify-center">
+    <header className="w-full py-12 md:py-20 px-4 flex justify-center relative">
       <Link href="/" className="hover-elevate transition-transform duration-300">
         <img 
           src={logoLettering} 
           alt="Claramente Não Sou um Escritor" 
-          className="h-24 md:h-32 object-contain"
+          className="h-32 md:h-48 object-contain"
         />
       </Link>
-      <Link href="/login" className="absolute top-0 right-0 opacity-0 h-10 w-10 cursor-help">
-        Admin
+      
+      {/* Hidden red dot login link - Small, random-looking but functional */}
+      <Link 
+        href="/login" 
+        className="fixed w-1.5 h-1.5 bg-red-600 rounded-full opacity-10 hover:opacity-100 transition-opacity z-50 cursor-default"
+        style={ {
+          top: '18.4%',
+          right: '7.2%'
+        } }
+        title="."
+      >
+        <span className="sr-only">Admin</span>
       </Link>
     </header>
   );
