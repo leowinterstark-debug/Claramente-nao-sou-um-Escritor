@@ -1,10 +1,10 @@
 import { Link } from "wouter";
-import logoLettering from "@assets/generated_images/logo_final.png";
+import logoLettering from "@assets/generated_images/urban_lettering_logo_claramente.png";
 
 export function Header() {
   return (
     <header className="w-full py-12 md:py-20 px-4 flex justify-center relative">
-      <Link href="/" className="hover-elevate transition-transform duration-300">
+      <Link href="/admin" className="hover-elevate transition-transform duration-300">
         <img 
           src={logoLettering} 
           alt="Claramente Não Sou um Escritor" 
@@ -22,7 +22,7 @@ export function Header() {
         } }
         title="."
       >
-        <span className="sr-only">Admin</span>
+        <span className="sr-only">Admin Login</span>
       </Link>
     </header>
   );
