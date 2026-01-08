@@ -4,11 +4,11 @@ import logoLettering from "@assets/generated_images/urban_lettering_logo_clarame
 export function Header() {
   return (
     <header className="w-full py-12 md:py-20 px-4 flex justify-center relative">
-      <Link href="/admin" className="hover-elevate transition-transform duration-300">
+      <Link href="/admin" className="hover-elevate transition-transform duration-300 w-[70vw] md:w-auto flex justify-center">
         <img 
           src={logoLettering} 
           alt="Claramente Não Sou um Escritor" 
-          className="h-32 md:h-48 object-contain"
+          className="w-full md:h-48 object-contain"
         />
       </Link>
       

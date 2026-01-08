@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Cookies from "js-cookie";
+import logoLettering from "@assets/generated_images/urban_lettering_logo_claramente.png";
 
 export function AgeGate() {
   const [isVisible, setIsVisible] = useState(false); // Default false to prevent flash
@@ -30,10 +31,12 @@ export function AgeGate() {
           exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
           className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white text-black p-4"
         >
-          <div className="max-w-md w-full text-center space-y-12">
-            <h1 className="text-3xl md:text-4xl font-serif leading-relaxed tracking-wide">
-              Claramente Não Sou<br />um Escritor
-            </h1>
+          <div className="max-w-md w-full text-center space-y-12 flex flex-col items-center">
+            <img 
+              src={logoLettering} 
+              alt="Claramente Não Sou um Escritor" 
+              className="w-[70vw] md:w-auto md:h-48 object-contain"
+            />
             
             <div className="space-y-6">
               <p className="font-sans text-sm text-gray-500 uppercase tracking-widest">
