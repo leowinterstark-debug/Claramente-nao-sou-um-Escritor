@@ -35,12 +35,12 @@ export function PostItem({ post, index }: PostItemProps) {
         </div>
 
         {/* Optional Image */}
-        {post.imageUrl && (
+        {post.coverImageUrl && (
           <div className="w-full mt-8 overflow-hidden grayscale hover:grayscale-0 transition-all duration-700 ease-in-out">
             {/* HTML comment for stock image if URL is missing/broken */}
             {/* generic minimalist photography */}
             <img 
-              src={post.imageUrl} 
+              src={post.coverImageUrl} 
               alt={post.title || "Imagem do post"} 
               className="w-full h-auto object-cover max-h-[600px]"
             />

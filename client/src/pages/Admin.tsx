@@ -12,8 +12,9 @@ export default function Admin() {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [coverImageUrl, setCoverImageUrl] = useState("");
   const [success, setSuccess] = useState(false);
+  const [isSuggesting, setIsSuggesting] = useState(false);
 
   // Protected route logic
   useEffect(() => {
@@ -21,6 +22,26 @@ export default function Admin() {
       setLocation("/login");
     }
   }, [auth, authLoading, setLocation]);
+
+  const handleSuggest = async () => {
+    if (!content) return;
+    setIsSuggesting(true);
+    try {
+      const res = await fetch("/api/ai/suggest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content }),
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Falha na sugestão");
+      const data = await res.json();
+      setContent(data.suggestion);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSuggesting(false);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,14 +51,15 @@ export default function Admin() {
       { 
         title: title || null, 
         content, 
-        imageUrl: imageUrl || null,
+        coverImageUrl: coverImageUrl || null,
+        bodyImageUrl: null,
         isVisible: true
       },
       {
         onSuccess: () => {
           setTitle("");
           setContent("");
-          setImageUrl("");
+          setCoverImageUrl("");
           setSuccess(true);
           setTimeout(() => setSuccess(false), 3000);
         }
@@ -82,12 +104,23 @@ export default function Admin() {
           />
 
           {/* Content Textarea */}
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Comece a escrever..."
-            className="w-full min-h-[40vh] text-lg font-serif leading-relaxed placeholder:text-gray-200 border-none focus:ring-0 p-0 bg-transparent resize-none"
-          />
+          <div className="relative group">
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="Comece a escrever..."
+              className="w-full min-h-[40vh] text-lg font-serif leading-relaxed placeholder:text-gray-200 border-none focus:ring-0 p-0 bg-transparent resize-none"
+            />
+            <button
+              type="button"
+              onClick={handleSuggest}
+              disabled={isSuggesting || !content}
+              className="absolute -right-12 top-0 p-2 text-gray-200 hover:text-black transition-colors disabled:opacity-30"
+              title="Sugerir ajustes com IA"
+            >
+              <Loader2 className={`w-5 h-5 ${isSuggesting ? 'animate-spin' : ''}`} />
+            </button>
+          </div>
 
           {/* Image URL Input */}
           <div className="border-t border-gray-100 pt-8">
@@ -96,8 +129,8 @@ export default function Admin() {
             </label>
             <input
               type="url"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
+              value={coverImageUrl}
+              onChange={(e) => setCoverImageUrl(e.target.value)}
               placeholder="https://..."
               className="w-full font-mono text-sm text-gray-600 bg-gray-50 border-none rounded-sm p-3 focus:ring-1 focus:ring-black/10"
             />
