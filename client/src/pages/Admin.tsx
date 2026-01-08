@@ -3,9 +3,11 @@ import { useCreatePost } from "@/hooks/use-posts";
 import { useAuthCheck, useLogout } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { Loader2, LogOut } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Admin() {
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
   const { data: auth, isLoading: authLoading } = useAuthCheck();
   const { mutate: logout } = useLogout();
   const { mutate: createPost, isPending } = useCreatePost();
@@ -62,6 +64,17 @@ export default function Admin() {
           setCoverImageUrl("");
           setSuccess(true);
           setTimeout(() => setSuccess(false), 3000);
+          toast({
+            title: "Sucesso",
+            description: "Publicação criada com sucesso.",
+          });
+        },
+        onError: (error: any) => {
+          toast({
+            title: "Erro ao publicar",
+            description: error.message || "Ocorreu um erro inesperado.",
+            variant: "destructive",
+          });
         }
       }
     );

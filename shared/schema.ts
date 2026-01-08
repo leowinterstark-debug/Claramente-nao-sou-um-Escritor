@@ -12,7 +12,13 @@ export const posts = pgTable("posts", {
   isVisible: boolean("is_visible").default(true),
 });
 
-export const insertPostSchema = createInsertSchema(posts).omit({ 
+export const insertPostSchema = createInsertSchema(posts, {
+  title: z.string().optional().nullable(),
+  content: z.string().min(1, "O conteúdo é obrigatório"),
+  coverImageUrl: z.string().optional().nullable(),
+  bodyImageUrl: z.string().optional().nullable(),
+  isVisible: z.boolean().optional(),
+}).omit({ 
   id: true, 
   createdAt: true 
 });
