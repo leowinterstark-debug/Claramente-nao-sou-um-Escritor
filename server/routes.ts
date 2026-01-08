@@ -5,7 +5,12 @@ import { api } from "@shared/routes";
 import { z } from "zod";
 import session from "express-session";
 import MemoryStore from "memorystore";
+import OpenAI from "openai";
 
+const openai = new OpenAI({
+  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+});
 const SessionStore = MemoryStore(session);
 
 export async function registerRoutes(
@@ -96,7 +101,7 @@ export async function registerRoutes(
     try {
       const { content } = api.ai.suggest.input.parse(req.body);
       
-      const response = await (app as any).openai.chat.completions.create({
+      const response = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           {

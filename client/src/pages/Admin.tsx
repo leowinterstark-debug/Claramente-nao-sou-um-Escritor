@@ -117,7 +117,7 @@ export default function Admin() {
           />
 
           {/* Content Textarea */}
-          <div className="relative">
+          <div className="relative group">
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
@@ -127,11 +127,11 @@ export default function Admin() {
             <button
               type="button"
               onClick={handleSuggest}
-              disabled={isSuggesting || !content || content.length < 10}
-              className="absolute -right-10 top-0 p-2 text-gray-200 hover:text-black transition-colors disabled:opacity-0"
+              disabled={isSuggesting || !content || content.length < 5}
+              className="absolute -right-6 md:-right-16 top-0 w-12 h-12 flex items-center justify-center bg-white rounded-full text-gray-400 hover:text-black hover:bg-gray-50 transition-all disabled:opacity-0 shadow-md border border-gray-100"
               title="Sugerir ajustes com IA"
             >
-              <Loader2 className={`w-4 h-4 ${isSuggesting ? 'animate-spin' : ''}`} />
+              <Loader2 className={`w-6 h-6 ${isSuggesting ? 'animate-spin' : ''}`} />
             </button>
           </div>
 
