@@ -8,7 +8,7 @@ export function Header() {
         <img 
           src={logoLettering} 
           alt="Claramente Não Sou um Escritor" 
-          className="w-full md:h-48 object-contain"
+          className="w-full md:h-96 object-contain"
         />
       </Link>
       
