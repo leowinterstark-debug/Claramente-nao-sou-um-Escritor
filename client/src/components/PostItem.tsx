@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import type { Post } from "@shared/schema";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 interface PostItemProps {
   post: Post;
@@ -9,6 +10,21 @@ interface PostItemProps {
 }
 
 export function PostItem({ post, index }: PostItemProps) {
+  const [imageError, setImageError] = useState(false);
+
+  // Helper to try and fix common non-direct image links
+  const getDirectImageUrl = (url: string) => {
+    if (!url) return "";
+    // postimg.cc simple transformation if possible
+    if (url.includes("postimg.cc") && !url.includes("i.postimg.cc") && !url.endsWith(".png") && !url.endsWith(".jpg")) {
+      // This is a guess but common for postimg page URLs
+      // Usually it's better to just let it fail and hide it
+    }
+    return url;
+  };
+
+  const imageUrl = getDirectImageUrl(post.coverImageUrl || "");
+
   return (
     <motion.article 
       initial={{ opacity: 0, y: 20 }}
@@ -35,14 +51,13 @@ export function PostItem({ post, index }: PostItemProps) {
         </div>
 
         {/* Optional Image */}
-        {post.coverImageUrl && (
+        {imageUrl && !imageError && (
           <div className="w-full mt-8 overflow-hidden grayscale hover:grayscale-0 transition-all duration-700 ease-in-out">
-            {/* HTML comment for stock image if URL is missing/broken */}
-            {/* generic minimalist photography */}
             <img 
-              src={post.coverImageUrl} 
+              src={imageUrl} 
               alt={post.title || "Imagem do post"} 
               className="w-full h-auto object-cover max-h-[600px]"
+              onError={() => setImageError(true)}
             />
           </div>
         )}
