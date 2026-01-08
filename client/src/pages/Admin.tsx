@@ -117,7 +117,7 @@ export default function Admin() {
           />
 
           {/* Content Textarea */}
-          <div className="relative group">
+          <div className="relative">
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
@@ -127,26 +127,43 @@ export default function Admin() {
             <button
               type="button"
               onClick={handleSuggest}
-              disabled={isSuggesting || !content}
-              className="absolute -right-12 top-0 p-2 text-gray-200 hover:text-black transition-colors disabled:opacity-30"
+              disabled={isSuggesting || !content || content.length < 10}
+              className="absolute -right-10 top-0 p-2 text-gray-200 hover:text-black transition-colors disabled:opacity-0"
               title="Sugerir ajustes com IA"
             >
-              <Loader2 className={`w-5 h-5 ${isSuggesting ? 'animate-spin' : ''}`} />
+              <Loader2 className={`w-4 h-4 ${isSuggesting ? 'animate-spin' : ''}`} />
             </button>
           </div>
 
-          {/* Image URL Input */}
+          {/* Image URL Input & Preview */}
           <div className="border-t border-gray-100 pt-8">
-            <label className="block font-sans text-xs text-gray-400 uppercase tracking-widest mb-2">
+            <label className="block font-sans text-xs text-gray-400 uppercase tracking-widest mb-4">
               Imagem de capa (URL)
             </label>
+            
+            {coverImageUrl && (
+              <div className="mb-6 w-full aspect-video bg-gray-50 overflow-hidden grayscale rounded-sm border border-gray-100">
+                <img 
+                  src={coverImageUrl} 
+                  alt="Preview" 
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
+
             <input
               type="url"
               value={coverImageUrl}
               onChange={(e) => setCoverImageUrl(e.target.value)}
-              placeholder="https://..."
-              className="w-full font-mono text-sm text-gray-600 bg-gray-50 border-none rounded-sm p-3 focus:ring-1 focus:ring-black/10"
+              placeholder="https://i.postimg.cc/..."
+              className="w-full font-mono text-xs text-gray-400 bg-transparent border-b border-gray-100 pb-2 focus:border-black focus:ring-0 transition-colors"
             />
+            <p className="mt-2 text-[10px] text-gray-300 font-sans uppercase tracking-tighter">
+              Dica: Use links diretos (que terminam em .jpg ou .png)
+            </p>
           </div>
 
           {/* Actions */}

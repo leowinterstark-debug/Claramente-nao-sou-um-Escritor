@@ -15,11 +15,19 @@ export function PostItem({ post, index }: PostItemProps) {
   // Helper to try and fix common non-direct image links
   const getDirectImageUrl = (url: string) => {
     if (!url) return "";
-    // postimg.cc simple transformation if possible
-    if (url.includes("postimg.cc") && !url.includes("i.postimg.cc") && !url.endsWith(".png") && !url.endsWith(".jpg")) {
-      // This is a guess but common for postimg page URLs
-      // Usually it's better to just let it fail and hide it
+    
+    // Normalize postimg.cc links
+    // From: https://postimg.cc/R6dVmB6J
+    // To:   https://i.postimg.cc/R6dVmB6J/image.png (or similar)
+    // Actually, postimg has a specific pattern for their "direct" links
+    if (url.includes("postimg.cc") && !url.includes("i.postimg.cc")) {
+      const parts = url.split("/");
+      const id = parts[parts.length - 1];
+      if (id && id.length > 5) {
+        return `https://i.postimg.cc/${id}/image.png`;
+      }
     }
+    
     return url;
   };
 
