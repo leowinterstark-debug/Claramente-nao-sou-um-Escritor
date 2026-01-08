@@ -1,4 +1,5 @@
 import { Link, useLocation } from "wouter";
+import logoLettering from "@assets/generated_images/lettering_logo_for_blog.png";
 
 export function Header() {
   const [location] = useLocation();
@@ -8,12 +9,16 @@ export function Header() {
 
   return (
     <header className="w-full py-20 px-4 flex justify-center">
-      <h1 className="text-2xl md:text-4xl font-serif text-center tracking-tight text-black selection:bg-black selection:text-white">
-        Claramente Não Sou um Escrito
-        <Link href="/login" className="hover:cursor-help transition-colors">
-          r
-        </Link>
-      </h1>
+      <Link href="/" className="hover-elevate transition-transform duration-300">
+        <img 
+          src={logoLettering} 
+          alt="Claramente Não Sou um Escritor" 
+          className="h-24 md:h-32 object-contain"
+        />
+      </Link>
+      <Link href="/login" className="absolute top-0 right-0 opacity-0 h-10 w-10 cursor-help">
+        Admin
+      </Link>
     </header>
   );
 }
