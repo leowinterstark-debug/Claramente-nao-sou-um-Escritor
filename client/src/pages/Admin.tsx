@@ -202,10 +202,10 @@ export default function Admin() {
               )}
 
               <input
-                type="url"
+                type="text"
                 value={coverImageUrl}
                 onChange={(e) => setCoverImageUrl(e.target.value)}
-                placeholder="https://i.postimg.cc/..."
+                placeholder="URL da imagem ou upload..."
                 className="w-full font-mono text-xs text-gray-400 bg-transparent border-b border-gray-100 pb-2 focus:border-black focus:ring-0 transition-colors"
               />
             </div>
