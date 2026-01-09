@@ -75,6 +75,16 @@ export async function registerRoutes(
     }
   });
 
+  app.delete(api.posts.delete.path, isAuthenticated, async (req, res) => {
+    const id = Number(req.params.id);
+    const post = await storage.getPost(id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    await storage.deletePost(id);
+    res.json({ success: true });
+  });
+
   // Auth Routes
   app.get(api.auth.check.path, (req, res) => {
     res.json({ isAuthenticated: !!(req.session as any).isAuthenticated });
