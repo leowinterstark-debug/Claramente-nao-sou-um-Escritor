@@ -60,7 +60,7 @@ export function PostItem({ post, index }: PostItemProps) {
 
         {/* Optional Image */}
         {imageUrl && !imageError && (
-          <div className="w-full mt-8 overflow-hidden grayscale hover:grayscale-0 transition-all duration-700 ease-in-out">
+          <div className="w-full mt-8 overflow-hidden grayscale hover:grayscale-0 transition-all duration-700 ease-in-out bg-gray-50">
             <img 
               src={imageUrl} 
               alt={post.title || "Imagem do post"} 

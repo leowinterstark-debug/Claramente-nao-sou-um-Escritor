@@ -179,6 +179,10 @@ export function useUpload(options: UseUploadOptions = {}) {
       }
 
       const data = await response.json();
+      
+      // Store the object path in the file metadata so it's available in onComplete
+      file.meta = { ...file.meta, objectPath: data.objectPath };
+
       return {
         method: "PUT",
         url: data.uploadURL,

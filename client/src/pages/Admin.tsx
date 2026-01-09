@@ -176,7 +176,7 @@ export default function Admin() {
                   onComplete={(result: any) => {
                     const upload = result.successful?.[0];
                     if (upload) {
-                      const path = (upload.response?.body as any)?.objectPath;
+                      const path = upload.meta?.objectPath;
                       if (path) {
                         setCoverImageUrl(path);
                       }
