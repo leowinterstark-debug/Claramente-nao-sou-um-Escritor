@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useCreatePost, usePosts } from "@/hooks/use-posts";
 import { useAuthCheck, useLogout } from "@/hooks/use-auth";
-import { useLocation } from "wouter";
-import { Loader2, LogOut, Trash2 } from "lucide-react";
+import { useLocation, Link } from "wouter";
+import { Loader2, LogOut, Trash2, ChevronLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useUpload } from "@/hooks/use-upload";
@@ -123,7 +123,12 @@ export default function Admin() {
           {/* Left Column: Form */}
           <div className="lg:col-span-7 space-y-12">
             <header className="flex justify-between items-center mb-8">
-              <h2 className="font-sans text-[10px] text-gray-400 uppercase tracking-widest">Nova Publicação</h2>
+              <div className="flex items-center gap-4">
+                <Link href="/" className="text-gray-300 hover:text-black transition-colors">
+                  <ChevronLeft className="w-4 h-4" />
+                </Link>
+                <h2 className="font-sans text-[10px] text-gray-400 uppercase tracking-widest">Nova Publicação</h2>
+              </div>
               <button 
                 onClick={handleLogout}
                 className="flex items-center gap-2 text-[10px] text-gray-400 hover:text-black uppercase tracking-widest transition-colors"

@@ -7,11 +7,11 @@ export function Header() {
 
   return (
     <header className={`w-full px-4 flex justify-center relative transition-all duration-500 ${isAdmin ? 'py-6 border-b border-gray-50' : 'py-12 md:py-20'}`}>
-      <Link href={isAdmin ? "/admin" : "/"} className={`hover-elevate transition-all duration-500 flex justify-center ${isAdmin ? 'w-32 md:w-40' : 'w-[70vw] md:w-auto'}`}>
+      <Link href={isAdmin ? "/admin" : "/"} className={`hover-elevate transition-all duration-500 flex justify-center ${isAdmin ? 'w-24 md:w-32' : 'w-[70vw] md:w-auto'}`}>
         <img 
           src={logoLettering} 
           alt="Claramente Não Sou um Escritor" 
-          className={`object-contain transition-all duration-500 ${isAdmin ? 'h-12' : 'w-full md:h-96'}`}
+          className={`object-contain transition-all duration-500 ${isAdmin ? 'h-10' : 'w-full md:h-96'}`}
         />
       </Link>
       
