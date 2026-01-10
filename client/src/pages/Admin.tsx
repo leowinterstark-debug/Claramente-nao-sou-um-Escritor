@@ -147,33 +147,35 @@ export default function Admin() {
                 className="w-full text-3xl font-serif placeholder:text-gray-100 border-none focus:ring-0 p-0 bg-transparent"
               />
 
-              <div className="relative group border-l border-gray-50 pl-6">
+              <div className="relative border-l border-gray-50 pl-6 group">
                 <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="Comece a escrever..."
                   className="w-full min-h-[30vh] text-lg font-serif leading-relaxed placeholder:text-gray-100 border-none focus:ring-0 p-0 bg-transparent resize-none"
                 />
-                <button
-                  type="button"
-                  onClick={handleSuggest}
-                  disabled={isSuggesting}
-                  className="absolute -right-4 top-0 transition-all duration-300 transform hover:scale-110 active:scale-95 disabled:grayscale"
-                  title={content ? "Melhorar texto com Jarbas" : "Gerar texto do zero com Jarbas"}
-                >
-                  <div className="relative">
-                    <img 
-                      src={aiMachineIcon} 
-                      alt="Jarbas AI" 
-                      className={`w-24 md:w-32 object-contain transition-all ${isSuggesting ? 'animate-pulse brightness-110' : 'hover:drop-shadow-lg'}`} 
-                    />
-                    {isSuggesting && (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Loader2 className="w-6 h-6 animate-spin text-orange-500" />
-                      </div>
-                    )}
-                  </div>
-                </button>
+                <div className="absolute bottom-2 right-0 flex items-center">
+                  <button
+                    type="button"
+                    onClick={handleSuggest}
+                    disabled={isSuggesting}
+                    className="transition-all duration-300 transform hover:scale-110 active:scale-95 disabled:grayscale"
+                    title={content.trim() ? "Melhorar/Ajustar crônica com Jarbas" : "Criar nova crônica do zero com Jarbas"}
+                  >
+                    <div className="relative">
+                      <img 
+                        src={aiMachineIcon} 
+                        alt="Jarbas AI" 
+                        className={`w-12 h-12 md:w-16 md:h-16 object-contain transition-all ${isSuggesting ? 'animate-pulse brightness-110' : 'opacity-40 group-hover:opacity-100 hover:drop-shadow-md'}`} 
+                      />
+                      {isSuggesting && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                </div>
               </div>
 
               <div className="pt-8 border-t border-gray-50">

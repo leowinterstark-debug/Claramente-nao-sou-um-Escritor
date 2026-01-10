@@ -115,8 +115,8 @@ export async function registerRoutes(
     try {
       const { content } = req.body;
       const prompt = content && content.trim().length > 0 
-        ? content 
-        : "Crie um pequeno texto inicial aleatório para um blog de diário anônimo, seguindo seu estilo e personalidade Jarbas.";
+        ? `Ajuste e melhore esta crônica seguindo seu estilo Jarbas: ${content}`
+        : "Crie uma crônica inédita e envolvente para um blog de diário anônimo, seguindo seu estilo e personalidade Jarbas (introspectiva, irônica, casual).";
 
       const response = await openai.chat.completions.create({
         model: "gpt-4o",
