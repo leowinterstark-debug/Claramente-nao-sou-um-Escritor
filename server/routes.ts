@@ -114,8 +114,7 @@ export async function registerRoutes(
   app.post(api.ai.suggest.path, isAuthenticated, async (req, res) => {
     try {
       const { content } = req.body;
-      
-      const prompt = content && content.length > 0 
+      const prompt = content && content.trim().length > 0 
         ? content 
         : "Crie um pequeno texto inicial aleatório para um blog de diário anônimo, seguindo seu estilo e personalidade Jarbas.";
 
@@ -132,6 +131,9 @@ PRIMARY OBJECTIVE:
 Improve the text’s narrative flow, readability, and emotional engagement,
 keeping the reader immersed in the story from start to finish,
 without removing the author’s original voice.
+
+SPECIAL INSTRUCTION:
+If the user's message is "Crie um pequeno texto inicial aleatório para um blog de diário anônimo, seguindo seu estilo e personalidade Jarbas.", ignore the "Intervention Limits" and create a completely new, original text that follows the Jarbas persona (introspective, slightly ironic/sarcastic, casual, Brazilian Portuguese).
 
 CONTEXT:
 The input text is personal, informal, and intentionally imperfect.
@@ -200,7 +202,7 @@ No comments, no explanations, no metadata.`
           },
           {
             role: "user",
-            content: content
+            content: prompt
           }
         ],
         max_tokens: 2000,
