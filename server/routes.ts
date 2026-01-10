@@ -113,8 +113,12 @@ export async function registerRoutes(
   // AI Routes
   app.post(api.ai.suggest.path, isAuthenticated, async (req, res) => {
     try {
-      const { content } = api.ai.suggest.input.parse(req.body);
+      const { content } = req.body;
       
+      const prompt = content && content.length > 0 
+        ? content 
+        : "Crie um pequeno texto inicial aleatório para um blog de diário anônimo, seguindo seu estilo e personalidade Jarbas.";
+
       const response = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [

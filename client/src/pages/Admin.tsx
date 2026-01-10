@@ -3,7 +3,7 @@ import { useCreatePost, usePosts } from "@/hooks/use-posts";
 import { useAuthCheck, useLogout } from "@/hooks/use-auth";
 import { useLocation, Link } from "wouter";
 import { Loader2, LogOut, Trash2, ChevronLeft } from "lucide-react";
-import aiCatButton from "@/assets/ai-assistant-cat.png";
+import aiMachineIcon from "@/assets/ai-machine.png";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useUpload } from "@/hooks/use-upload";
@@ -157,19 +157,19 @@ export default function Admin() {
                 <button
                   type="button"
                   onClick={handleSuggest}
-                  disabled={isSuggesting || !content || content.length < 5}
-                  className="absolute -right-4 top-0 transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-0 disabled:grayscale"
-                  title="Sugerir ajustes com IA"
+                  disabled={isSuggesting}
+                  className="absolute -right-4 top-0 transition-all duration-300 transform hover:scale-110 active:scale-95 disabled:grayscale"
+                  title={content ? "Melhorar texto com Jarbas" : "Gerar texto do zero com Jarbas"}
                 >
                   <div className="relative">
                     <img 
-                      src={aiCatButton} 
-                      alt="AI Assistant" 
-                      className={`w-32 md:w-40 object-contain ${isSuggesting ? 'animate-pulse grayscale' : ''}`} 
+                      src={aiMachineIcon} 
+                      alt="Jarbas AI" 
+                      className={`w-24 md:w-32 object-contain transition-all ${isSuggesting ? 'animate-pulse brightness-110' : 'hover:drop-shadow-lg'}`} 
                     />
                     {isSuggesting && (
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+                        <Loader2 className="w-6 h-6 animate-spin text-orange-500" />
                       </div>
                     )}
                   </div>
