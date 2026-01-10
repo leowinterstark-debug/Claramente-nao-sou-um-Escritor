@@ -39,7 +39,7 @@ export default function Admin() {
       const res = await fetch("/api/ai/suggest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content }),
+        body: JSON.stringify({ content, coverImageUrl }),
         credentials: "include",
       });
       if (!res.ok) throw new Error("Falha na sugestão");
@@ -154,19 +154,19 @@ export default function Admin() {
                   placeholder="Comece a escrever..."
                   className="w-full min-h-[30vh] text-lg font-serif leading-relaxed placeholder:text-gray-100 border-none focus:ring-0 p-0 bg-transparent resize-none"
                 />
-                <div className="absolute bottom-2 right-0 flex items-center">
+                <div className="absolute bottom-4 right-4 flex items-center">
                   <button
                     type="button"
                     onClick={handleSuggest}
                     disabled={isSuggesting}
                     className="transition-all duration-300 transform hover:scale-110 active:scale-95 disabled:grayscale"
-                    title={content.trim() ? "Melhorar/Ajustar crônica com Jarbas" : "Criar nova crônica do zero com Jarbas"}
+                    title={content.trim() ? "Ajustar crônica com Jarbas" : "Criar crônica a partir da imagem com Jarbas"}
                   >
                     <div className="relative">
                       <img 
                         src={aiMachineIcon} 
                         alt="Jarbas AI" 
-                        className={`w-12 h-12 md:w-16 md:h-16 object-contain transition-all ${isSuggesting ? 'animate-pulse brightness-110' : 'opacity-40 group-hover:opacity-100 hover:drop-shadow-md'}`} 
+                        className={`w-10 h-10 md:w-12 md:h-12 object-contain transition-all ${isSuggesting ? 'animate-pulse brightness-110' : 'opacity-30 group-hover:opacity-100 hover:drop-shadow-sm'}`} 
                       />
                       {isSuggesting && (
                         <div className="absolute inset-0 flex items-center justify-center">
