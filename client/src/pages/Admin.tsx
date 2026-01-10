@@ -3,6 +3,7 @@ import { useCreatePost, usePosts } from "@/hooks/use-posts";
 import { useAuthCheck, useLogout } from "@/hooks/use-auth";
 import { useLocation, Link } from "wouter";
 import { Loader2, LogOut, Trash2, ChevronLeft } from "lucide-react";
+import aiCatButton from "@/assets/ai-assistant-cat.png";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useUpload } from "@/hooks/use-upload";
@@ -157,10 +158,21 @@ export default function Admin() {
                   type="button"
                   onClick={handleSuggest}
                   disabled={isSuggesting || !content || content.length < 5}
-                  className="absolute -right-4 top-0 w-10 h-10 flex items-center justify-center bg-white rounded-full text-gray-300 hover:text-black hover:shadow-sm transition-all disabled:opacity-0 border border-gray-50"
+                  className="absolute -right-4 top-0 transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-0 disabled:grayscale"
                   title="Sugerir ajustes com IA"
                 >
-                  <Loader2 className={`w-5 h-5 ${isSuggesting ? 'animate-spin' : ''}`} />
+                  <div className="relative">
+                    <img 
+                      src={aiCatButton} 
+                      alt="AI Assistant" 
+                      className={`w-32 md:w-40 object-contain ${isSuggesting ? 'animate-pulse grayscale' : ''}`} 
+                    />
+                    {isSuggesting && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+                      </div>
+                    )}
+                  </div>
                 </button>
               </div>
 
