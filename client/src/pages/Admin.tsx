@@ -33,13 +33,13 @@ export default function Admin() {
   }, [auth, authLoading, setLocation]);
 
   const handleSuggest = async () => {
-    if (!content) return;
+    if (!content && !title) return;
     setIsSuggesting(true);
     try {
       const res = await fetch("/api/ai/suggest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content, coverImageUrl }),
+        body: JSON.stringify({ content, title, coverImageUrl }),
         credentials: "include",
       });
       if (!res.ok) throw new Error("Falha na sugestão");
