@@ -14,26 +14,15 @@ const openai = new OpenAI({
 const SessionStore = MemoryStore(session);
 
 import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
+import multer from "multer";
+import fs from "fs";
+
+const upload = multer({ dest: "/tmp/uploads/" });
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // Register Object Storage routes
-  registerObjectStorageRoutes(app);
-  // Auth Middleware
-  app.use(
-    session({
-      cookie: { maxAge: 86400000 },
-      store: new SessionStore({
-        checkPeriod: 86400000,
-      }),
-      resave: false,
-      saveUninitialized: false,
-      secret: process.env.SESSION_SECRET || "secret_key",
-    })
-  );
-
   const isAuthenticated = (req: any, res: any, next: any) => {
     if (req.session.isAuthenticated) {
       next();
@@ -41,6 +30,32 @@ export async function registerRoutes(
       res.status(401).json({ message: "Unauthorized" });
     }
   };
+
+  // Register Object Storage routes
+  registerObjectStorageRoutes(app);
+
+  // AI Transcription Route
+  app.post("/api/ai/transcribe", isAuthenticated, upload.single("audio"), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "Nenhum arquivo de áudio enviado" });
+      }
+
+      const response = await openai.audio.transcriptions.create({
+        file: fs.createReadStream(req.file.path),
+        model: "whisper-1",
+        language: "pt",
+      });
+
+      // Limpar arquivo temporário
+      fs.unlinkSync(req.file.path);
+
+      res.json({ text: response.text });
+    } catch (err) {
+      console.error("AI Transcription error:", err);
+      res.status(500).json({ message: "Falha ao transcrever áudio" });
+    }
+  });
 
   // API Routes
   app.get(api.posts.list.path, async (req, res) => {

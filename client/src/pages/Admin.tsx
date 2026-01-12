@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useCreatePost, usePosts } from "@/hooks/use-posts";
 import { useAuthCheck, useLogout } from "@/hooks/use-auth";
 import { useLocation, Link } from "wouter";
-import { Loader2, LogOut, Trash2, ChevronLeft } from "lucide-react";
+import { Loader2, LogOut, Trash2, ChevronLeft, Mic, Square } from "lucide-react";
 import aiMachineIcon from "@/assets/ai-machine.png";
+import logoAdmin from "@/assets/logo-admin.png";
+import micIcon from "@/assets/mic-icon.png";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useUpload } from "@/hooks/use-upload";
@@ -24,6 +26,10 @@ export default function Admin() {
   const [success, setSuccess] = useState(false);
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [isDeleting, setIsDeleting] = useState<number | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
   // Protected route logic
   useEffect(() => {
@@ -31,6 +37,70 @@ export default function Admin() {
       setLocation("/login");
     }
   }, [auth, authLoading, setLocation]);
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunksRef.current.push(event.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        await handleTranscription(audioBlob);
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (err) {
+      toast({
+        title: "Erro no microfone",
+        description: "Não foi possível acessar o microfone.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+  const handleTranscription = async (blob: Blob) => {
+    setIsTranscribing(true);
+    try {
+      const formData = new FormData();
+      formData.append("audio", blob, "recording.webm");
+
+      const res = await fetch("/api/ai/transcribe", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Falha na transcrição");
+      const data = await res.json();
+      setContent(prev => prev ? `${prev}\n\n${data.text}` : data.text);
+      toast({
+        title: "Áudio transcrito",
+        description: "O texto foi adicionado à sua crônica.",
+      });
+    } catch (err) {
+      toast({
+        title: "Erro na transcrição",
+        description: "Não foi possível transcrever o áudio.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsTranscribing(false);
+    }
+  };
 
   const handleSuggest = async () => {
     if (!content && !title) return;
@@ -124,11 +194,11 @@ export default function Admin() {
           {/* Left Column: Form */}
           <div className="lg:col-span-7 space-y-12">
             <header className="flex justify-between items-center mb-8">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-6">
                 <Link href="/" className="text-gray-300 hover:text-black transition-colors">
                   <ChevronLeft className="w-4 h-4" />
                 </Link>
-                <h2 className="font-sans text-[10px] text-gray-400 uppercase tracking-widest">Nova Publicação</h2>
+                <img src={logoAdmin} alt="Claramente Não Sou um Escritor" className="h-20 w-auto object-contain" />
               </div>
               <button 
                 onClick={handleLogout}
@@ -154,7 +224,36 @@ export default function Admin() {
                   placeholder="Comece a escrever..."
                   className="w-full min-h-[30vh] text-lg font-serif leading-relaxed placeholder:text-gray-100 border-none focus:ring-0 p-0 bg-transparent resize-none"
                 />
-                <div className="absolute bottom-4 right-4 flex items-center">
+                <div className="absolute bottom-4 right-4 flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={isRecording ? stopRecording : startRecording}
+                    disabled={isTranscribing}
+                    className="transition-all duration-300 transform hover:scale-110 active:scale-95 disabled:grayscale"
+                    title={isRecording ? "Parar gravação" : "Gravar áudio com Jarbas"}
+                  >
+                    <div className="relative">
+                      <img 
+                        src={micIcon} 
+                        alt="Gravar" 
+                        className={`w-10 h-10 md:w-12 md:h-12 object-contain transition-all ${isRecording ? 'animate-pulse scale-110' : isTranscribing ? 'animate-spin grayscale opacity-50' : 'opacity-30 group-hover:opacity-100'}`} 
+                      />
+                      {isTranscribing && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+                        </div>
+                      )}
+                      {isRecording && (
+                        <div className="absolute -top-1 -right-1">
+                          <span className="relative flex h-3 w-3">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </button>
+
                   <button
                     type="button"
                     onClick={handleSuggest}
