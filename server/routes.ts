@@ -6,35 +6,47 @@ import { z } from "zod";
 import session from "express-session";
 import MemoryStore from "memorystore";
 import OpenAI from "openai";
+import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
+import multer from "multer";
+import fs from "fs";
 
 const openai = new OpenAI({
   apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
 });
 const SessionStore = MemoryStore(session);
-
-import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
-import multer from "multer";
-import fs from "fs";
-
 const upload = multer({ dest: "/tmp/uploads/" });
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // 1. Session Middleware (Must be registered first)
+  app.use(
+    session({
+      cookie: { maxAge: 86400000 },
+      store: new SessionStore({
+        checkPeriod: 86400000,
+      }),
+      resave: false,
+      saveUninitialized: false,
+      secret: process.env.SESSION_SECRET || "secret_key",
+    })
+  );
+
+  // 2. Auth Guard
   const isAuthenticated = (req: any, res: any, next: any) => {
-    if (req.session.isAuthenticated) {
+    if (req.session && (req.session as any).isAuthenticated) {
       next();
     } else {
       res.status(401).json({ message: "Unauthorized" });
     }
   };
 
-  // Register Object Storage routes
+  // 3. Integrations
   registerObjectStorageRoutes(app);
 
-  // AI Transcription Route
+  // 4. Transcription Route
   app.post("/api/ai/transcribe", isAuthenticated, upload.single("audio"), async (req, res) => {
     try {
       if (!req.file) {
@@ -47,9 +59,7 @@ export async function registerRoutes(
         language: "pt",
       });
 
-      // Limpar arquivo temporário
       fs.unlinkSync(req.file.path);
-
       res.json({ text: response.text });
     } catch (err) {
       console.error("AI Transcription error:", err);
@@ -57,12 +67,9 @@ export async function registerRoutes(
     }
   });
 
-  // API Routes
+  // 5. API Routes
   app.get(api.posts.list.path, async (req, res) => {
     const posts = await storage.getPosts();
-    // In a real anonymous diary, we might want to filter out hidden posts for public
-    // But for admin we see all. Let's just return all for now or filter in frontend.
-    // The requirement says "Indexar apenas páginas públicas" and "Área administrativa (secreta)".
     res.json(posts);
   });
 
@@ -100,15 +107,13 @@ export async function registerRoutes(
     res.json({ success: true });
   });
 
-  // Auth Routes
+  // 6. Auth Routes
   app.get(api.auth.check.path, (req, res) => {
     res.json({ isAuthenticated: !!(req.session as any).isAuthenticated });
   });
 
   app.post(api.auth.login.path, (req, res) => {
     const { password } = req.body;
-    // Simple hardcoded password for the "secret" login as requested
-    // In production, use env var.
     const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
     
     if (password === adminPassword) {
@@ -125,7 +130,7 @@ export async function registerRoutes(
     });
   });
 
-  // AI Routes
+  // 7. AI Routes
   app.post(api.ai.suggest.path, isAuthenticated, async (req, res) => {
     try {
       const { content } = req.body;
@@ -178,7 +183,7 @@ LANGUAGE STYLE RULES:
   - cafezin, textin, pensamentinho, enfim, né, cara
 - You may lightly mix Spanish or English when it feels organic and subtle.
   Examples:
-  - un poco, más o menos
+  - un poco, más ou menos
   - kind of, you know, whatever
 - Do not force multilingual usage. Less is more.
 
@@ -230,9 +235,7 @@ No comments, no explanations, no metadata.`
     }
   });
 
-  // Seed Data
   await seedDatabase();
-
   return httpServer;
 }
 
