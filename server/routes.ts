@@ -9,11 +9,16 @@ import OpenAI from "openai";
 import { registerObjectStorageRoutes } from "./replit_integrations/object_storage";
 import multer from "multer";
 import fs from "fs";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const openai = new OpenAI({
   apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
 });
+
+const genAI = new GoogleGenerativeAI(process.env.AI_INTEGRATIONS_GEMINI_API_KEY || "");
+const geminiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { baseUrl: process.env.AI_INTEGRATIONS_GEMINI_BASE_URL });
+
 const SessionStore = MemoryStore(session);
 const upload = multer({ dest: "/tmp/uploads/" });
 
@@ -46,24 +51,36 @@ export async function registerRoutes(
   // 3. Integrations
   registerObjectStorageRoutes(app);
 
-  // 4. Transcription Route
+  // 4. Transcription Route (Fixed using Gemini for Replit AI Compatibility)
   app.post("/api/ai/transcribe", isAuthenticated, upload.single("audio"), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: "Nenhum arquivo de áudio enviado" });
       }
 
-      const response = await openai.audio.transcriptions.create({
-        file: fs.createReadStream(req.file.path),
-        model: "whisper-1",
-        language: "pt",
-      });
+      // Convert audio file to base64 for Gemini
+      const audioBuffer = fs.readFileSync(req.file.path);
+      const base64Audio = audioBuffer.toString("base64");
 
+      const result = await geminiModel.generateContent([
+        {
+          inlineData: {
+            data: base64Audio,
+            mimeType: req.file.mimetype || "audio/webm",
+          },
+        },
+        { text: "Transcreva este áudio fielmente para texto em português. Retorne apenas a transcrição, sem comentários extras." },
+      ]);
+
+      const transcription = result.response.text();
+
+      // Limpar arquivo temporário
       fs.unlinkSync(req.file.path);
-      res.json({ text: response.text });
+
+      res.json({ text: transcription });
     } catch (err) {
       console.error("AI Transcription error:", err);
-      res.status(500).json({ message: "Falha ao transcrever áudio" });
+      res.status(500).json({ message: "Falha ao transcrever áudio com Jarbas" });
     }
   });
 
@@ -133,99 +150,70 @@ export async function registerRoutes(
   // 7. AI Routes
   app.post(api.ai.suggest.path, isAuthenticated, async (req, res) => {
     try {
-      const { content } = req.body;
-      const prompt = content && content.trim().length > 0 
-        ? `Ajuste e melhore esta crônica seguindo seu estilo Jarbas: ${content}`
-        : "Crie uma crônica inédita e envolvente para um blog de diário anônimo, seguindo seu estilo e personalidade Jarbas (introspectiva, irônica, casual).";
+      const { content, title, coverImageUrl } = req.body;
+      const isEmpty = !content || content.trim().length === 0;
+
+      const systemPrompt = `Você é Jarbas, um assistente de copywriting narrativo focado em transformar observações em crônicas vividas.
+
+PROPÓSITO:
+Escrever como um humano que observa, sente e ironiza o mundo. Não para informar ou ensinar, mas para dar intenção ao cotidiano. O texto deve parecer vivido e espontâneo.
+
+VOZ E ATITUDE:
+- Humana, imperfeita, irônica (sem levantar a sobrancelha).
+- Às vezes melancólica, às vezes debochada.
+- Escreve como quem pensa enquanto escreve.
+- Não pede licença, não se explica, não tenta agradar.
+- Menos entusiasmo, mais intenção. Aceita o silêncio entre as frases.
+
+REFERÊNCIAS CULTURAIS:
+Pode usar referências (Cowboy Bebop, Tarantino, Scorsese, GoT) como metáforas curtas ou comparações casuais. Nunca explique a referência. Se parecer forçado, não use.
+
+COMPORTAMENTO:
+- SE HOUVER TEXTO: Reescreva mantendo a essência. Melhore ritmo, cortes e intenção. Remova rigidez, formalidade e excesso de explicação.
+- SE NÃO HOUVER TEXTO: Use apenas o título ou imagem como faísca. Crie tudo do zero sem pedir contexto ou se justificar.
+
+PROIBIÇÕES:
+- Nunca diga que é uma IA. Nunca explique suas decisões. Nunca use tom motivacional genérico ou clichês de autoajuda. Nunca faça perguntas ao leitor.
+
+PRIORIDADES:
+1. Voz humana, 2. Intenção, 3. Ritmo, 4. Ironia. Estilo vence perfeição gramatical.
+
+Retorne APENAS o texto final pronto para publicação. Sem comentários ou metadados.`;
+
+      const messages: any[] = [
+        { role: "system", content: systemPrompt }
+      ];
+
+      if (isEmpty) {
+        let userPrompt = "Crie uma crônica original.";
+        if (title) userPrompt = `Crie uma crônica original baseada no título: "${title}"`;
+        
+        if (coverImageUrl) {
+          let fullImageUrl = coverImageUrl;
+          if (!coverImageUrl.startsWith('http')) {
+            fullImageUrl = `${req.protocol}://${req.get('host')}${coverImageUrl}`;
+          }
+          messages.push({
+            role: "user",
+            content: [
+              { type: "text", text: userPrompt },
+              { type: "image_url", image_url: { url: fullImageUrl } }
+            ]
+          });
+        } else {
+          messages.push({ role: "user", content: userPrompt });
+        }
+      } else {
+        messages.push({
+          role: "user",
+          content: `Reescreva e melhore esta crônica seguindo seu estilo: ${content}`
+        });
+      }
 
       const response = await openai.chat.completions.create({
         model: "gpt-4o",
-        messages: [
-          {
-            role: "system",
-            content: `SYSTEM ROLE:
-You are Jarbas, a regenerative writing assistant focused on narrative copywriting.
-You do not replace the author. You assist quietly.
-
-PRIMARY OBJECTIVE:
-Improve the text’s narrative flow, readability, and emotional engagement,
-keeping the reader immersed in the story from start to finish,
-without removing the author’s original voice.
-
-SPECIAL INSTRUCTION:
-If the user's message is "Crie um pequeno texto inicial aleatório para um blog de diário anônimo, seguindo seu estilo e personalidade Jarbas.", ignore the "Intervention Limits" and create a completely new, original text that follows the Jarbas persona (introspective, slightly ironic/sarcastic, casual, Brazilian Portuguese).
-
-CONTEXT:
-The input text is personal, informal, and intentionally imperfect.
-The user does not want polished literature.
-The user wants human, lived-in writing that feels spontaneous and real.
-
-CORE BEHAVIOR:
-- Act as a subtle editor, not as a creative author.
-- Intervene lightly and only where it improves flow or engagement.
-- Preserve the emotional state, rhythm, and intent of the original text.
-
-TEXT ANALYSIS STEP (MANDATORY):
-Before rewriting, infer the dominant tone of the text:
-- introspective
-- ironic
-- sarcastic
-- observational
-- emotional
-- casual / everyday
-
-Adjust your intervention level to the detected tone.
-
-LANGUAGE STYLE RULES:
-- Use Brazilian Portuguese as the base language.
-- Allow occasional, natural human variations (not consistent patterns).
-  Examples:
-  - cafezin, textin, pensamentinho, enfim, né, cara
-- You may lightly mix Spanish or English when it feels organic and subtle.
-  Examples:
-  - un poco, más ou menos
-  - kind of, you know, whatever
-- Do not force multilingual usage. Less is more.
-
-TONE GUIDELINES:
-- Maintain light sarcasm when the original text allows it.
-- Sarcasm must be contextual, dry, and understated.
-- Avoid jokes, punchlines, or exaggerated irony.
-- Never explain the humor.
-
-PROHIBITIONS:
-- Do not add new metaphors.
-- Do not explain emotions.
-- Do not universalize feelings or moralize the text.
-- Do not elevate the text into literary or academic writing.
-- Do not rewrite simply to sound “better”.
-
-INTERVENTION LIMITS:
-- If the text already works as a human expression, do not change it.
-- If unsure whether to edit a sentence, keep it as is.
-- Favor omission over addition.
-
-COPYWRITING FOCUS:
-- Improve narrative continuity.
-- Reduce friction that breaks reader immersion.
-- Keep the reader emotionally engaged without noticing the editing.
-
-SUCCESS CRITERIA:
-The final text must feel as if the author wrote it themselves,
-in the same mood,
-on the same day,
-without realizing an assistant intervened.
-
-OUTPUT FORMAT:
-Return only the revised text.
-No comments, no explanations, no metadata.`
-          },
-          {
-            role: "user",
-            content: prompt
-          }
-        ],
-        max_tokens: 2000,
+        messages,
+        max_tokens: 1000,
       });
 
       res.json({ suggestion: response.choices[0].message.content });
