@@ -198,7 +198,7 @@ export default function Admin() {
                 <Link href="/" className="text-gray-300 hover:text-black transition-colors">
                   <ChevronLeft className="w-4 h-4" />
                 </Link>
-                <img src={logoAdmin} alt="Claramente Não Sou um Escritor" className="h-20 w-auto object-contain" />
+                <img src={logoAdmin} alt="Claramente Não Sou um Escritor" className="h-12 w-auto object-contain" />
               </div>
               <button 
                 onClick={handleLogout}

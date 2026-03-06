@@ -58,12 +58,25 @@ export const api = {
     suggest: {
       method: 'POST' as const,
       path: '/api/ai/suggest',
-      input: z.object({ content: z.string() }),
+      input: z.object({ 
+        content: z.string().optional(),
+        title: z.string().optional(),
+        coverImageUrl: z.string().optional()
+      }),
       responses: {
         200: z.object({ suggestion: z.string() }),
         400: errorSchemas.validation,
       },
     },
+    transcribe: {
+      method: 'POST' as const,
+      path: '/api/ai/transcribe',
+      responses: {
+        200: z.object({ text: z.string() }),
+        400: errorSchemas.validation,
+        401: errorSchemas.unauthorized,
+      },
+    }
   },
   auth: {
     check: {
